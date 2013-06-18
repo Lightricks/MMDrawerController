@@ -111,7 +111,7 @@
     [self setNeedsDisplay];
 }
 
--(void)drawRect:(CGRect)rect{
+-(void)drawRect:(CGRect __unused)rect{
     //// General Declarations
     CGContextRef context = UIGraphicsGetCurrentContext();
     

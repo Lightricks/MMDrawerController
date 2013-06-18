@@ -391,7 +391,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
              [self.centerContainerView setFrame:newCenterRect];
              [sideDrawerViewController.view setFrame:self.view.bounds];
          }
-         completion:^(BOOL finished) {
+         completion:^(BOOL __unused finished) {
 
              CGRect oldCenterRect = self.centerContainerView.frame;
              [self setCenterViewController:newCenterViewController animated:animated];
@@ -486,7 +486,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
 #pragma mark - Bounce Methods
 -(void)bouncePreviewForDrawerSide:(MMDrawerSide)drawerSide completion:(void(^)(BOOL finished))completion{
     NSParameterAssert(drawerSide!=MMDrawerSideNone);
-    [self bouncePreviewForDrawerSide:drawerSide distance:MMDrawerDefaultBounceDistance completion:nil];
+    [self bouncePreviewForDrawerSide:drawerSide distance:MMDrawerDefaultBounceDistance completion:completion];
 }
 
 -(void)bouncePreviewForDrawerSide:(MMDrawerSide)drawerSide distance:(CGFloat)distance completion:(void(^)(BOOL finished))completion{
@@ -624,7 +624,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
     }
 }
 
--(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation{
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation __unused)toInterfaceOrientation{
     return YES;
 }
 
@@ -758,7 +758,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
 
 -(void)tapGesture:(UITapGestureRecognizer *)tapGesture{
     if(self.openSide != MMDrawerSideNone){
-        [self closeDrawerAnimated:YES completion:^(BOOL finished) {
+        [self closeDrawerAnimated:YES completion:^(BOOL __unused finished) {
             if(self.gestureCompletion){
                 self.gestureCompletion(self, tapGesture);
             }
@@ -813,7 +813,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
         case UIGestureRecognizerStateEnded:{
             self.startingPanRect = CGRectNull;
             CGPoint velocity = [panGesture velocityInView:self.view];
-            [self finishAnimationForPanGestureWithXVelocity:velocity.x completion:^(BOOL finished) {
+            [self finishAnimationForPanGestureWithXVelocity:velocity.x completion:^(BOOL __unused finished) {
                 if(self.gestureCompletion){
                     self.gestureCompletion(self, panGesture);
                 }
