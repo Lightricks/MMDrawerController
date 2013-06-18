@@ -327,8 +327,8 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
     [self updateShadowForCenterView];
     
     if(animated == NO){
-        [self.centerViewController beginAppearanceTransition:YES animated:NO];
-        [self.centerViewController endAppearanceTransition];
+        //[self.centerViewController beginAppearanceTransition:YES animated:NO];
+        //[self.centerViewController endAppearanceTransition];
         [self.centerViewController didMoveToParentViewController:self];
     }
 }
