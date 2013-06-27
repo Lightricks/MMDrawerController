@@ -34,9 +34,6 @@ CGFloat const MMDrawerDefaultBounceDistance = 50.0f;
 NSTimeInterval const MMDrawerDefaultBounceAnimationDuration = 0.2f;
 CGFloat const MMDrawerDefaultSecondBounceDistancePercentage = .25f;
 
-CGFloat const MMDrawerDefaultShadowRadius = 10.0f;
-CGFloat const MMDrawerDefaultShadowOpacity = 0.8;
-
 NSTimeInterval const MMDrawerMinimumAnimationDuration = 0.15f;
 
 CGFloat const MMDrawerBezelRange = 20.0f;
@@ -554,6 +551,9 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
 	[super viewDidLoad];
 
 	[self.view setBackgroundColor:[UIColor blackColor]];
+  
+  self.shadowOpacity = 0.8;
+  self.shadowRadius = 10;
 
 	[self setupGestureRecognizers];
 }
@@ -983,8 +983,8 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
     UIView * centerView = self.centerContainerView;
     if(self.showsShadow){
         centerView.layer.masksToBounds = NO;
-        centerView.layer.shadowRadius = MMDrawerDefaultShadowRadius;
-        centerView.layer.shadowOpacity = MMDrawerDefaultShadowOpacity;
+        centerView.layer.shadowRadius = self.shadowRadius;
+        centerView.layer.shadowOpacity = self.shadowOpacity;
         centerView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:self.centerContainerView.bounds] CGPath];
     }
     else {

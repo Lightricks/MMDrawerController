@@ -193,6 +193,20 @@ typedef void (^MMDrawerControllerDrawerVisualStateBlock)(MMDrawerController * dr
  */
 @property (nonatomic, assign) BOOL showsShadow;
 
+/**
+ The value determining the radius of the shadow.
+ 
+ The default value is 10.0. This is relevant only if `showsShadow` is YES.
+ */
+@property (nonatomic, assign) CGFloat shadowRadius;
+
+/**
+ The value determining the opacity of the shadow.
+ 
+ The default value is 0.8. This is relevant only if `showsShadow` is YES.
+ */
+@property (nonatomic, assign) CGFloat shadowOpacity;
+
 ///---------------------------------------
 /// @name Initializing a `MMDrawerController`
 ///---------------------------------------
