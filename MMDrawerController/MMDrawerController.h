@@ -207,6 +207,20 @@ typedef void (^MMDrawerControllerDrawerVisualStateBlock)(MMDrawerController * dr
  */
 @property (nonatomic, assign) CGFloat shadowOpacity;
 
+/**
+ The background color of the center view when a drawer is open.
+ 
+ By default, this value is nil, meaning no new color will be set to the background.
+ */
+@property (nonatomic, strong) UIColor *openDrawerCenterBackgroundColor;
+
+/**
+ The background color of the center view when a drawer is closed.
+ 
+ By default, this value is [UIColor clearColor].
+ */
+@property (nonatomic, strong) UIColor *closeDrawerCenterBackgroundColor;
+
 ///---------------------------------------
 /// @name Initializing a `MMDrawerController`
 ///---------------------------------------

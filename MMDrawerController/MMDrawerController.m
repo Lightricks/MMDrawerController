@@ -223,6 +223,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
      animations:^{
          [self.centerContainerView setFrame:newFrame];
          [self updateDrawerVisualStateForDrawerSide:visibleSide percentVisible:0.0];
+         self.centerContainerView.backgroundColor = self.closeDrawerCenterBackgroundColor;
      }
      completion:^(BOOL finished) {
          [sideDrawerViewController endAppearanceTransition];
@@ -266,7 +267,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
         
         CGFloat distance = ABS(CGRectGetMinX(oldFrame)-newFrame.origin.x);
         NSTimeInterval duration = MAX(distance/ABS(velocity),MMDrawerMinimumAnimationDuration);
-        
+      
         [UIView
          animateWithDuration:(animated?duration:0.0)
          delay:0.0
@@ -274,6 +275,9 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
          animations:^{
              [self.centerContainerView setFrame:newFrame];
              [self updateDrawerVisualStateForDrawerSide:drawerSide percentVisible:1.0];
+             if (self.openDrawerCenterBackgroundColor) {
+               self.centerContainerView.backgroundColor = self.openDrawerCenterBackgroundColor;
+             }
          }
          completion:^(BOOL finished) {
              //End the appearance transition if it already wasn't open.
@@ -296,7 +300,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
     if(_centerContainerView == nil){
         _centerContainerView = [[MMDrawerCenterContainerView alloc] initWithFrame:self.view.bounds];
         [self.centerContainerView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-        [self.centerContainerView setBackgroundColor:[UIColor clearColor]];
+        [self.centerContainerView setBackgroundColor:self.closeDrawerCenterBackgroundColor];
         [self.centerContainerView setOpenSide:self.openSide];
         [self.centerContainerView setCenterInteractionMode:self.centerHiddenInteractionMode];
         [self.view addSubview:self.centerContainerView];
@@ -753,6 +757,13 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
     }
 }
 
+- (UIColor *)closeDrawerCenterBackgroundColor {
+  if (!_closeDrawerCenterBackgroundColor) {
+    _closeDrawerCenterBackgroundColor = [UIColor clearColor];
+  }
+  return _closeDrawerCenterBackgroundColor;
+}
+
 
 #pragma mark - Gesture Handlers
 
@@ -788,7 +799,10 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
                 percentVisible = ABS(xOffset)/self.maximumRightDrawerWidth;
             }
             UIViewController * visibleSideDrawerViewController = [self sideDrawerViewControllerForSide:visibleSide];
-            
+          
+            self.centerContainerView.backgroundColor = [self mixColor:self.openDrawerCenterBackgroundColor
+                                                             andColor:self.closeDrawerCenterBackgroundColor alpha:percentVisible];
+          
             if(self.openSide != visibleSide){
                 //Handle disappearing the visible drawer
                 UIViewController * sideDrawerViewController = [self sideDrawerViewControllerForSide:self.openSide];
@@ -1006,6 +1020,35 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
         sideDrawerViewController = self.rightDrawerViewController;
     }
     return sideDrawerViewController;
+}
+
+- (UIColor *)mixColor:(UIColor *)first andColor:(UIColor *)second alpha:(CGFloat)alpha {
+  if (CGColorGetNumberOfComponents(first.CGColor) == 4 &&
+      CGColorGetNumberOfComponents(second.CGColor) == 4) {
+    CGFloat firstColors[4];
+    CGFloat secondColors[4];
+    
+    [first getRed:&firstColors[0] green:&firstColors[1] blue:&firstColors[2] alpha:&firstColors[3]];
+    [second getRed:&secondColors[0] green:&secondColors[1] blue:&secondColors[2]
+             alpha:&secondColors[3]];
+    
+    return [UIColor colorWithRed:firstColors[0] * alpha + secondColors[0] * (1 - alpha)
+                           green:firstColors[1] * alpha + secondColors[1] * (1 - alpha)
+                            blue:firstColors[2] * alpha + secondColors[2] * (1 - alpha)
+                           alpha:firstColors[3] * alpha + secondColors[3] * (1 - alpha)];
+  } else if (CGColorGetNumberOfComponents(first.CGColor) == 2 &&
+             CGColorGetNumberOfComponents(second.CGColor) == 2) {
+    CGFloat firstColors[2];
+    CGFloat secondColors[2];
+    
+    [first getWhite:&firstColors[0] alpha:&firstColors[1]];
+    [second getWhite:&secondColors[0] alpha:&secondColors[1]];
+    
+    return [UIColor colorWithWhite:firstColors[0] * alpha + secondColors[0] * (1 - alpha)
+                             alpha:firstColors[1] * alpha + secondColors[1] * (1 - alpha)];
+  }
+  
+  return first;
 }
 
 #pragma mark - UIGestureRecognizerDelegate
