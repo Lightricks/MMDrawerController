@@ -6,13 +6,6 @@
 <img src="http://mutualmobile.github.io/MMDrawerController/ExampleImages/example2.png" width="266" height="500"/>
 </p>
 
-<!-- MacBuildServer Install Button -->
-<p align="center" >
-    <a href="http://macbuildserver.com/project/github/build/?xcode_project=KitchenSink%2FMMDrawerControllerKitchenSink.xcodeproj&amp;target=MMDrawerControllerKitchenSink&amp;repo_url=git%3A%2F%2Fgithub.com%2Fmutualmobile%2FMMDrawerController.git&amp;build_conf=Release" target="_blank"><img src="http://com.macbuildserver.github.s3-website-us-east-1.amazonaws.com/button_up.png" align="center"/><br/><sup><a href="http://macbuildserver.com/github/opensource/" target="_blank">by MacBuildServer</a></sup></a>
-</p>
-<!-- MacBuildServer Install Button -->
-
-
 ---
 ##Documentation
 Official appledoc documentation can be found at [CocoaDocs](http://cocoadocs.org/docsets/MMDrawerController/).
@@ -23,7 +16,7 @@ Official appledoc documentation can be found at [CocoaDocs](http://cocoadocs.org
 You can install MMDrawerController in your project by using [CocoaPods](https://github.com/cocoapods/cocoapods):
 
 ```Ruby
-pod 'MMDrawerController', '~> 0.2.0'
+pod 'MMDrawerController', '~> 0.2.1'
 ```
 
 ---
@@ -80,7 +73,7 @@ For example, to set the alpha of the side drawer controller from 0 to 1 during a
 		 else if(drawerSide == MMDrawerSideRight){
 			 sideDrawerViewController = drawerController.rightDrawerViewController;
 		 }
-		 [sideDrawerViewController setAlpha:percentVisible];
+		 [sideDrawerViewController.view setAlpha:percentVisible];
      }];
 ```
 

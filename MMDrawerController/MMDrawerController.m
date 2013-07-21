@@ -147,7 +147,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
 
 -(id)initWithCenterViewController:(UIViewController *)centerViewController leftDrawerViewController:(UIViewController *)leftDrawerViewController rightDrawerViewController:(UIViewController *)rightDrawerViewController{
     NSParameterAssert(centerViewController);
-    self = [self init];
+    self = [super init];
     if(self){
         [self setCenterViewController:centerViewController];
         [self setLeftDrawerViewController:leftDrawerViewController];
@@ -1054,17 +1054,18 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
 #pragma mark - UIGestureRecognizerDelegate
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
     CGPoint point = [touch locationInView:self.view];
-    
+    BOOL shouldReceiveTouch = NO;
     if(self.openSide == MMDrawerSideNone){
         MMOpenDrawerGestureMode possibleOpenGestureModes = [self possibleOpenGestureModesForGestureRecognizer:gestureRecognizer
                                                                                                withTouchPoint:point];
-        return ((self.openDrawerGestureModeMask & possibleOpenGestureModes)>0);
+        shouldReceiveTouch = ((self.openDrawerGestureModeMask & possibleOpenGestureModes)>0);
     }
     else{
         MMCloseDrawerGestureMode possibleCloseGestureModes = [self possibleCloseGestureModesForGestureRecognizer:gestureRecognizer
                                                                                                   withTouchPoint:point];
-        return ((self.closeDrawerGestureModeMask & possibleCloseGestureModes)>0);
+        shouldReceiveTouch = ((self.closeDrawerGestureModeMask & possibleCloseGestureModes)>0);
     }
+    return shouldReceiveTouch;
 }
 
 #pragma mark Gesture Recogizner Delegate Helpers
@@ -1085,7 +1086,12 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
         if([self isPointContainedWithinCenterViewContentRect:point]){
             possibleCloseGestureModes |= MMCloseDrawerGestureModePanningCenterView;
         }
-        if([self isPointContainedWithinBezelRect:point]){
+        if([self isPointContainedWithRightBezelRect:point] &&
+           self.openSide == MMDrawerSideLeft){
+            possibleCloseGestureModes |= MMCloseDrawerGestureModeBezelPanningCenterView;
+        }
+        if([self isPointContainedWithinLeftBezelRect:point] &&
+           self.openSide == MMDrawerSideRight){
             possibleCloseGestureModes |= MMCloseDrawerGestureModeBezelPanningCenterView;
         }
         if([self isPointContainedWithinCenterViewContentRect:point] == NO &&
@@ -1105,9 +1111,15 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
         if([self isPointContainedWithinCenterViewContentRect:point]){
             possibleOpenGestureModes |= MMOpenDrawerGestureModePanningCenterView;
         }
-        if([self isPointContainedWithinBezelRect:point]){
+        if([self isPointContainedWithinLeftBezelRect:point] &&
+           self.leftDrawerViewController){
             possibleOpenGestureModes |= MMOpenDrawerGestureModeBezelPanningCenterView;
         }
+        if([self isPointContainedWithRightBezelRect:point] &&
+           self.rightDrawerViewController){
+            possibleOpenGestureModes |= MMOpenDrawerGestureModeBezelPanningCenterView;
+        }
+        
     }
     return possibleOpenGestureModes;
 }
@@ -1130,17 +1142,20 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
             [self isPointContainedWithinNavigationRect:point] == NO);
 }
 
--(BOOL)isPointContainedWithinBezelRect:(CGPoint)point{
-    CGRect leftBezelRect;
+-(BOOL)isPointContainedWithinLeftBezelRect:(CGPoint)point{
+    CGRect leftBezelRect = CGRectNull;
     CGRect tempRect;
     CGRectDivide(self.view.bounds, &leftBezelRect, &tempRect, MMDrawerBezelRange, CGRectMinXEdge);
-    
-    CGRect rightBezelRect;
-    CGRectDivide(self.view.bounds, &rightBezelRect, &tempRect, MMDrawerBezelRange, CGRectMaxXEdge);
-    
-    return ((CGRectContainsPoint(leftBezelRect, point) ||
-      CGRectContainsPoint(rightBezelRect, point)) &&
-     [self isPointContainedWithinCenterViewContentRect:point]);
+    return (CGRectContainsPoint(leftBezelRect, point) &&
+            [self isPointContainedWithinCenterViewContentRect:point]);
 }
 
+-(BOOL)isPointContainedWithRightBezelRect:(CGPoint)point{
+    CGRect rightBezelRect = CGRectNull;
+    CGRect tempRect;
+    CGRectDivide(self.view.bounds, &rightBezelRect, &tempRect, MMDrawerBezelRange, CGRectMaxXEdge);
+    
+    return (CGRectContainsPoint(rightBezelRect, point) &&
+            [self isPointContainedWithinCenterViewContentRect:point]);
+}
 @end
