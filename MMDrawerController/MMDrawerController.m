@@ -895,7 +895,7 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
 - (void)applyOvershootScaleTransformForDrawerSide:(MMDrawerSide)drawerSide percentVisible:(CGFloat)percentVisible{
     
     if (percentVisible >= 1.f) {
-        CATransform3D transform;
+        CATransform3D transform = CATransform3DIdentity;
         UIViewController * sideDrawerViewController = [self sideDrawerViewControllerForSide:drawerSide];
         if(drawerSide == MMDrawerSideLeft) {
             transform = CATransform3DMakeScale(percentVisible, 1.f, 1.f);
