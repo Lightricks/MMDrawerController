@@ -629,7 +629,20 @@ static CAKeyframeAnimation * bounceKeyFrameAnimationForDistanceOnView(CGFloat di
 }
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation __unused)toInterfaceOrientation{
-    return YES;
+  for (UIViewController *child in self.childViewControllers) {
+    if (![child shouldAutorotateToInterfaceOrientation:toInterfaceOrientation]) {
+      return NO;
+    }
+  }
+  return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+  UIInterfaceOrientationMask mask = UIInterfaceOrientationMaskAll;
+  for (UIViewController *child in self.childViewControllers) {
+    mask &= [child supportedInterfaceOrientations];
+  }
+  return mask;
 }
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation{
