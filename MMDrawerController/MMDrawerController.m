@@ -408,6 +408,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     [self updateShadowForCenterView];
     
     if(animated == NO){
+        // Removed transition to avoid viewWillAppear: being called twice.
         // [self.centerViewController beginAppearanceTransition:YES animated:NO];
         // [self.centerViewController endAppearanceTransition];
         [self.centerViewController didMoveToParentViewController:self];
@@ -431,8 +432,9 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
          }];
     }
     else {
-        [self.centerViewController beginAppearanceTransition:YES animated:NO];
-        [self.centerViewController endAppearanceTransition];
+      // Removed transition to avoid viewWillAppear: being called twice.
+      // [self.centerViewController beginAppearanceTransition:YES animated:NO];
+      // [self.centerViewController endAppearanceTransition];
         [self.centerViewController didMoveToParentViewController:self];
         if(completion) {
             completion(NO);
@@ -775,8 +777,8 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
         if((self.openSide == drawerSide) &&
            [self.view.subviews containsObject:self.centerContainerView]){
             [self.view insertSubview:viewController.view belowSubview:self.centerContainerView];
-            [viewController beginAppearanceTransition:YES animated:NO];
-            [viewController endAppearanceTransition];
+//            [viewController beginAppearanceTransition:YES animated:NO];
+//            [viewController endAppearanceTransition];
         }
         else{
             [self.view addSubview:viewController.view];
