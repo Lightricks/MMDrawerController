@@ -725,7 +725,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
   return YES;
 }
 
-- (NSUInteger)supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
   UIInterfaceOrientationMask mask = UIInterfaceOrientationMaskAll;
   for (UIViewController *child in self.childViewControllers) {
     mask &= [child supportedInterfaceOrientations];
